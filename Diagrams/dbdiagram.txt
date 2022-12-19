@@ -1,0 +1,57 @@
+View Diagram on https://dbdiagram.io/
+
+Table users {
+  username varchar(50) [pk]
+  password_hash text
+  name varchar(50)
+  elo int
+  coins int [default: 20]
+  wins int [default: 0]
+  losses int [default: 0]
+  bio varchar(200) [default: NULL]
+  image varchar(200) [default: NULL]
+}
+
+Table user_cards_stack {
+  username varchar(50) [ref: > users.username]
+  card_id text [ref: > cards.id]
+
+  Indexes {
+    (username, card_id) [pk]
+  }
+}
+
+Table user_cards_deck {
+  username varchar(50) [ref: > users.username]
+  card_id text [ref: > cards.id]
+
+  Indexes {
+    (username, card_id) [pk]
+  }
+}
+
+Table cards {
+  id text [pk]
+  name text
+  type card_type
+  element card_element
+  damage float
+}
+
+Enum card_type {
+  Spell
+  Goblin
+  Troll
+  Elf
+  Knight
+  Dragon
+  Ork
+  Kraken
+  Wizard
+}
+
+Enum card_element {
+  normal
+  water
+  fire
+}
