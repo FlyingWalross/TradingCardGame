@@ -2,12 +2,12 @@ View Diagram on https://dbdiagram.io/
 
 Table users {
   username varchar(50) [pk]
-  password_hash text
-  name varchar(50)
-  elo int
-  coins int [default: 20]
-  wins int [default: 0]
-  losses int [default: 0]
+  password_hash text [NOT NULL]
+  name varchar(50) [NOT NULL]
+  elo int [default: 100, NOT NULL]
+  coins int [default: 20, NOT NULL]
+  wins int [default: 0, NOT NULL]
+  losses int [default: 0, NOT NULL]
   bio varchar(200) [default: NULL]
   image varchar(200) [default: NULL]
 }
@@ -32,10 +32,10 @@ Table user_cards_deck {
 
 Table cards {
   id text [pk]
-  name text
-  type card_type
-  element card_element
-  damage float
+  name text [NOT NULL]
+  type card_type [NOT NULL]
+  element card_element [NOT NULL]
+  damage float [NOT NULL]
 }
 
 Enum card_type {
