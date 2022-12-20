@@ -40,6 +40,7 @@ public class UserRepository implements Repository<User, String> {
 
     @Override
     public User create(User user) throws SQLException {
-            return getUserDao().create(user);
+            getUserDao().create(user);
+            return getUserDao().read().get(user.getUsername());
     }
 }

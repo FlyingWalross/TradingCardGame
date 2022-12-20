@@ -3,6 +3,8 @@ package app.controllers;
 import app.dtos.NewUser;
 import app.models.User;
 import app.repositories.UserRepository;
+import app.services.AuthenticationService;
+import app.services.EncryptionService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import http.ContentType;
 import http.HttpStatus;
@@ -15,10 +17,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 // Our User Controller is using the database with repositories, DAOs, Models, (DTOs)
+@Setter(AccessLevel.PRIVATE)
+@Getter(AccessLevel.PRIVATE)
 public class UserController extends Controller {
-    @Setter(AccessLevel.PRIVATE)
-    @Getter(AccessLevel.PRIVATE)
     UserRepository userRepository;
+
     public UserController(UserRepository userRepository) {
         setUserRepository(userRepository);
     }
@@ -54,6 +57,7 @@ public class UserController extends Controller {
 
     // GET /user-profiles/:username
     public Response getUser(String username) {
+
         try {
             // our userRepository returns a single UserProfile getById
             User user = getUserRepository().getById(username);
@@ -89,8 +93,7 @@ public class UserController extends Controller {
         try {
             NewUser newUser = getObjectMapper().readValue(requestBody, NewUser.class);
 
-            //TODO: hash password
-            String passwordHash = newUser.getPasswordPlain();
+            String passwordHash = EncryptionService.hashPassword(newUser.getPasswordPlain());
             User user = new User(newUser.getUsername(), passwordHash);
 
             getUserRepository().create(user);
@@ -120,6 +123,38 @@ public class UserController extends Controller {
                 );
 
             }
+        } catch (JsonProcessingException e) {
+            return new Response(
+                    HttpStatus.BAD_REQUEST,
+                    ContentType.JSON,
+                    "{ \"data\": null, \"error\": \"Request was malformed\" }"
+            );
+        }
+    }
+
+    // POST /user-profiles
+    public Response loginUser(String requestBody, AuthenticationService authenticationService) {
+        try {
+            NewUser newUser = getObjectMapper().readValue(requestBody, NewUser.class);
+
+            User user = authenticationService.authenticateWithPassword(newUser.getUsername(), newUser.getPasswordPlain());
+
+            if(user == null) {
+                return new Response(
+                        HttpStatus.UNAUTHORIZED,
+                        ContentType.JSON,
+                        "{ \"data\": null, \"error\": \"Invalid username or password\" }"
+                );
+            }
+
+            String token = authenticationService.generateToken(user);
+
+            return new Response(
+                    HttpStatus.OK,
+                    ContentType.JSON,
+                    token
+            );
+
         } catch (JsonProcessingException e) {
             return new Response(
                     HttpStatus.BAD_REQUEST,

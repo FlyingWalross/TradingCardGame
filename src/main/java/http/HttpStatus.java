@@ -10,7 +10,8 @@ public enum HttpStatus {
     BAD_REQUEST(400, "Bad Request"),
     NOT_FOUND(404, "Not Found"),
     INTERNAL_SERVER_ERROR(500, "Internal Server Error"),
-    DUPLICATE(409, "Already exists");
+    DUPLICATE(409, "Already exists"),
+    UNAUTHORIZED(401, "Unauthorized");
 
     @Getter
     @Setter(AccessLevel.PRIVATE)

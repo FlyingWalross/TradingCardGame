@@ -7,7 +7,9 @@ import lombok.Setter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 
 @Getter
@@ -19,6 +21,7 @@ public class Request {
     private String contentType;
     private Integer contentLength;
     private String body = "";
+    private Map<String, String> headers;
 
     @Setter(AccessLevel.NONE)
     @Getter(AccessLevel.NONE)
@@ -44,14 +47,22 @@ public class Request {
                 setPathname(getPathnameFromInputLine(splitFirstLine, hasParams));
                 setParams(getParamsFromInputLine(splitFirstLine, hasParams));
 
+                headers = new HashMap<>();
+
+                line = inputStream.readLine();
                 while (!line.isEmpty()) {
-                    line = inputStream.readLine();
                     if (line.startsWith(CONTENT_LENGTH)) {
                         setContentLength(getContentLengthFromInputLine(line));
                     }
                     if (line.startsWith(CONTENT_TYPE)) {
                         setContentType(getContentTypeFromInputLine(line));
                     }
+                    // Add the header to the headers field
+                    int colonIndex = line.indexOf(":");
+                    String key = line.substring(0, colonIndex).trim();
+                    String value = line.substring(colonIndex + 1).trim();
+                    headers.put(key, value);
+                    line = inputStream.readLine();
                 }
 
                 if (getMethod() == Method.POST || getMethod() == Method.PUT) {
