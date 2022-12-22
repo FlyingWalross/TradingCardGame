@@ -38,6 +38,19 @@ Table cards {
   damage float [NOT NULL]
 }
 
+Table packs {
+  id int [pk, increment]
+}
+
+Table pack_cards {
+  pack_id int  [ref: > packs.id]
+  card_id text [ref: > cards.id]
+
+  Indexes {
+    (pack_id, card_id) [pk]
+  }
+}
+
 Enum card_type {
   Spell
   Goblin
