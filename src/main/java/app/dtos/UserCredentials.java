@@ -9,11 +9,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class NewUser {
-        @JsonAlias({"username"})
+public class UserCredentials {
+        @JsonAlias({"Username"})
         String username;
-        @JsonAlias({"password"})
+        @JsonAlias({"Password"})
         String passwordPlain;
 
-        public NewUser() {}
+        public UserCredentials() {}
 }

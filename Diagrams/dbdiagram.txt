@@ -1,11 +1,10 @@
 View Diagram on https://dbdiagram.io/
-
 Table users {
   username varchar(50) [pk]
   password_hash text [NOT NULL]
   name varchar(50) [NOT NULL]
-  elo int [default: 100, NOT NULL]
-  coins int [default: 20, NOT NULL]
+  elo int [NOT NULL]
+  coins int [NOT NULL]
   wins int [default: 0, NOT NULL]
   losses int [default: 0, NOT NULL]
   bio varchar(200) [default: NULL]
@@ -33,8 +32,8 @@ Table user_cards_deck {
 Table cards {
   id text [pk]
   name text [NOT NULL]
-  type card_type [NOT NULL]
-  element card_element [NOT NULL]
+  type int [NOT NULL]
+  element int [NOT NULL]
   damage float [NOT NULL]
 }
 
@@ -49,22 +48,4 @@ Table pack_cards {
   Indexes {
     (pack_id, card_id) [pk]
   }
-}
-
-Enum card_type {
-  Spell
-  Goblin
-  Troll
-  Elf
-  Knight
-  Dragon
-  Ork
-  Kraken
-  Wizard
-}
-
-Enum card_element {
-  normal
-  water
-  fire
 }

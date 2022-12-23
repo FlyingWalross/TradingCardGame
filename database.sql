@@ -1,27 +1,9 @@
-CREATE TYPE "card_type" AS ENUM (
-  'Spell',
-  'Goblin',
-  'Troll',
-  'Elf',
-  'Knight',
-  'Dragon',
-  'Ork',
-  'Kraken',
-  'Wizard'
-);
-
-CREATE TYPE "card_element" AS ENUM (
-  'normal',
-  'water',
-  'fire'
-);
-
 CREATE TABLE "users" (
                          "username" varchar(50) PRIMARY KEY,
                          "password_hash" text NOT NULL,
                          "name" varchar(50) NOT NULL,
-                         "elo" int NOT NULL DEFAULT 100,
-                         "coins" int NOT NULL DEFAULT 20,
+                         "elo" int NOT NULL,
+                         "coins" int NOT NULL,
                          "wins" int NOT NULL DEFAULT 0,
                          "losses" int NOT NULL DEFAULT 0,
                          "bio" varchar(200) DEFAULT NULL,
@@ -43,8 +25,8 @@ CREATE TABLE "user_cards_deck" (
 CREATE TABLE "cards" (
                          "id" text PRIMARY KEY,
                          "name" text NOT NULL,
-                         "type" card_type NOT NULL,
-                         "element" card_element NOT NULL,
+                         "type" int NOT NULL,
+                         "element" int NOT NULL,
                          "damage" float NOT NULL
 );
 

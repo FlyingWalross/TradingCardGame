@@ -1,5 +1,8 @@
 package app.daos;
 
+import app.models.Card;
+import app.models.User;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -10,10 +13,14 @@ public interface Dao<T, ID> {
     // that needs to be implemented by the DAOs
     T create(T t) throws SQLException;
     HashMap<ID, T> read() throws SQLException;
+
+    T readById(ID id) throws SQLException;
+
     // you could also return the newly updated or
     // deleted object, but
     // we already have all the information on the client
     // we want to reduce complexity
-    void update() throws SQLException;
-    void delete() throws SQLException;
+    void update(T t) throws SQLException;
+
+    void delete(T t) throws SQLException;
 }
