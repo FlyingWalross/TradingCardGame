@@ -1,8 +1,5 @@
 package app.daos;
 
-import app.models.Card;
-import app.models.User;
-
 import java.sql.SQLException;
 import java.util.HashMap;
 

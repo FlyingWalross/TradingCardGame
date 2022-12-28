@@ -5,11 +5,14 @@ import app.daos.DeckDao;
 import app.daos.StackDao;
 import app.daos.UserDao;
 import app.dtos.*;
+import app.exceptions.AlreadyExistsException;
+import app.exceptions.UserDoesNotExistException;
 import app.models.Card;
 import app.models.Deck;
 import app.models.Stack;
 import app.models.User;
 import app.services.EncryptionService;
+import http.Responses;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +20,7 @@ import lombok.Setter;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 @Setter(AccessLevel.PRIVATE)
 @Getter(AccessLevel.PRIVATE)
@@ -63,25 +67,98 @@ public class UserProfileRepository {
     }
 
     public UserStats getUserStats(UserProfile userProfile) {
-            return new UserStats(userProfile.getName(), userProfile.getElo(), userProfile.getWins(), userProfile.getLosses());
+            return new UserStats(
+                    userProfile.getName(),
+                    userProfile.getElo(),
+                    userProfile.getWins(),
+                    userProfile.getLosses());
     }
 
-    public UserProfile create(UserCredentials userCredentials) throws SQLException {
-        String passwordHash = EncryptionService.hashPassword(userCredentials.getPasswordPlain());
-        User user = new User(userCredentials.getUsername(), passwordHash);
-        getUserDao().create(user);
+    public ArrayList<UserStats> getScoreboard() {
+        try {
+            HashMap<String, User> users = getUserDao().read();
+            ArrayList<UserStats> scoreboard = new ArrayList<>();
 
-        return this.getById(userCredentials.getUsername());
+            //sort HashMap by elo and add userStats to scoreboard
+            users.values().stream()
+                    .sorted((u1, u2) -> u2.getElo() - u1.getElo())
+                    .forEach(user -> scoreboard.add(new UserStats(user.getName(), user.getElo(), user.getWins(), user.getLosses())));
+
+            return scoreboard;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public UserProfile update(UserInfo userInfo, String username) throws SQLException {
-        User user = getUserDao().readById(username);
-        user.setName(userInfo.getName());
-        user.setBio(userInfo.getBio());
-        user.setImage(userInfo.getImage());
+    public UserProfile create(UserCredentials userCredentials) throws AlreadyExistsException {
+        try {
+            String passwordHash = EncryptionService.hashPassword(userCredentials.getPasswordPlain());
+            User user = new User(userCredentials.getUsername(), passwordHash);
+            getUserDao().create(user);
 
-        getUserDao().update(user);
-        return this.getById(user.getUsername());
+            return this.getById(userCredentials.getUsername());
+        } catch (SQLException e) {
+            String sqlState = e.getSQLState();
+            if (sqlState.equals("23000") || sqlState.equals("23505")) {
+                throw new AlreadyExistsException("Username already exists");
+            } else {
+                // Other SQL exceptions
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void update(UserInfo userInfo, String username) throws UserDoesNotExistException {
+        try {
+            User user = getUserDao().readById(username);
+
+            if(user == null){
+                throw new UserDoesNotExistException("User does not exist");
+            }
+
+            user.setName(userInfo.getName());
+            user.setBio(userInfo.getBio());
+            user.setImage(userInfo.getImage());
+
+            getUserDao().update(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void update(UserProfile userProfile) {
+        try {
+            //update User
+            User user = new User(
+                    userProfile.getUsername(),
+                    userProfile.getPasswordHash(),
+                    userProfile.getName(),
+                    userProfile.getElo(),
+                    userProfile.getCoins(),
+                    userProfile.getWins(),
+                    userProfile.getLosses(),
+                    userProfile.getBio(),
+                    userProfile.getImage()
+            );
+            getUserDao().update(user);
+
+            //update Stack
+            ArrayList<String> stackCardIds = new ArrayList<>();
+            for (Card card : userProfile.getStack()) {
+                stackCardIds.add(card.getId());
+            }
+            getStackDao().update(new Stack(userProfile.getUsername(), stackCardIds));
+
+            //update Deck
+            ArrayList<String> deckCardIds = new ArrayList<>();
+            for (Card card : userProfile.getDeck()) {
+                deckCardIds.add(card.getId());
+            }
+            getDeckDao().update(new Deck(userProfile.getUsername(), deckCardIds));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ArrayList<Card> getUserDeck(String username) {

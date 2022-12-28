@@ -1,13 +1,16 @@
 package app;
 
+import app.controllers.CardController;
+import app.controllers.PackController;
+import app.controllers.TradeController;
 import app.controllers.UserController;
 import app.daos.*;
 import app.dtos.UserProfile;
+import app.repositories.PackRepository;
+import app.repositories.TradeRepository;
 import app.repositories.UserProfileRepository;
 import app.services.AuthenticationService;
 import app.services.DatabaseService;
-import http.ContentType;
-import http.HttpStatus;
 import http.Responses;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,17 +27,24 @@ import static http.Method.POST;
 @Setter(AccessLevel.PRIVATE)
 @Getter(AccessLevel.PRIVATE)
 public class App implements ServerApp {
-    private Connection connection;
-    private AuthenticationService authenticationService;
+    Connection connection;
+    AuthenticationService authenticationService;
 
-    private UserDao userDao;
-    private CardDao cardDao;
-    private DeckDao deckDao;
-    private StackDao stackDao;
-    private PackDao packDao;
+    UserDao userDao;
+    CardDao cardDao;
+    DeckDao deckDao;
+    StackDao stackDao;
+    PackDao packDao;
+    TradeDao tradeDao;
 
-    private UserProfileRepository userProfileRepository;
-    private UserController userController;
+    UserProfileRepository userProfileRepository;
+    PackRepository packRepository;
+    TradeRepository tradeRepository;
+
+    UserController userController;
+    PackController packController;
+    CardController cardController;
+    TradeController tradeController;
 
     // In our app we instantiate all of our DAOs, repositories, and controllers
     // we inject the DAOs to the repos
@@ -51,10 +61,16 @@ public class App implements ServerApp {
         setDeckDao(new DeckDao(getConnection()));
         setStackDao(new StackDao(getConnection()));
         setPackDao(new PackDao(getConnection()));
+        setTradeDao(new TradeDao(getConnection()));
 
         setUserProfileRepository(new UserProfileRepository(getUserDao(), getStackDao(), getDeckDao(), getCardDao()));
+        setPackRepository(new PackRepository(getPackDao(), getCardDao()));
+        setTradeRepository(new TradeRepository(getTradeDao(), getCardDao()));
 
         setUserController(new UserController(getUserProfileRepository()));
+        setPackController(new PackController(getUserProfileRepository(), getPackRepository()));
+        setCardController(new CardController(getUserProfileRepository()));
+        setTradeController(new TradeController(getUserProfileRepository(), getTradeRepository()));
 
         setAuthenticationService(new AuthenticationService(getUserProfileRepository()));
     }
@@ -70,31 +86,56 @@ public class App implements ServerApp {
         }
         // check method
         switch (request.getMethod()) {
-            case GET: {
+            case GET -> {
                 // check path and path variables
                 if (request.getPathname().matches("/users/.+")) {
                     String username = request.getPathname().split("/")[2];
-                    if(username.equals(user.getUsername()) || user.getUsername().equals("admin")){
+                    if (username.equals(user.getUsername()) || user.getUsername().equals("admin")) {
                         return getUserController().getUserInfo(username);
                     }
                     return Responses.notAuthenticated();
                 }
                 if (request.getPathname().matches("/stats")) {
-                        return getUserController().getUserStats(user);
+                    return getUserController().getUserStats(user);
                 }
-                break;
+                if (request.getPathname().matches("/scores")) {
+                    return getUserController().getScoreboard();
+                }
+                if (request.getPathname().matches("/cards")) {
+                    return getCardController().getUserCards(user);
+                }
+                if (request.getPathname().matches("/decks")) {
+                    return getCardController().getUserDeck(user);
+                }
+                if (request.getPathname().matches("/tradings")) {
+                    return getTradeController().getAllTrades();
+                }
             }
-            case POST: {
+            case POST -> {
                 if (request.getPathname().equals("/users")) {
                     return getUserController().createUser(request.getBody());
                 }
-
                 if (request.getPathname().equals("/sessions")) {
                     return getUserController().loginUser(request.getBody(), getAuthenticationService());
                 }
-                break;
+                if (request.getPathname().equals("/packages")) {
+                    if (user.getUsername().equals("admin")) {
+                        return getPackController().createPack(request.getBody());
+                    }
+                    return Responses.notAdmin();
+                }
+                if (request.getPathname().equals("/transactions/packages")) {
+                    return getPackController().buyPack(user);
+                }
+                if (request.getPathname().matches("/tradings")) {
+                    return getTradeController().createTrade(request.getBody(), user);
+                }
+                if (request.getPathname().matches("/tradings/.+")) {
+                    String tradeId = request.getPathname().split("/")[2];
+                    return getTradeController().acceptTrade(request.getBody(), tradeId, user);
+                }
             }
-            case PUT: {
+            case PUT -> {
                 if (request.getPathname().matches("/users/.+")) {
                     String username = request.getPathname().split("/")[2];
                     if (username.equals(user.getUsername()) || user.getUsername().equals("admin")) {
@@ -102,10 +143,15 @@ public class App implements ServerApp {
                     }
                     return Responses.notAuthenticated();
                 }
-                break;
+                if (request.getPathname().equals("/decks")) {
+                    return getCardController().configureDeck(request.getBody(), user);
+                }
             }
-            default: {
-                return Responses.routeNotFound();
+            case DELETE -> {
+                if (request.getPathname().matches("/tradings/.+")) {
+                    String tradeId = request.getPathname().split("/")[2];
+                    return getTradeController().deleteTrade(tradeId, user);
+                }
             }
         }
         return Responses.routeNotFound();

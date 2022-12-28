@@ -12,8 +12,8 @@ Table users {
 }
 
 Table user_cards_stack {
-  username varchar(50) [ref: > users.username]
-  card_id text [ref: > cards.id]
+  username varchar(50) [ref: > users.username, NOT NULL]
+  card_id text [ref: > cards.id, NOT NULL]
 
   Indexes {
     (username, card_id) [pk]
@@ -21,12 +21,20 @@ Table user_cards_stack {
 }
 
 Table user_cards_deck {
-  username varchar(50) [ref: > users.username]
-  card_id text [ref: > cards.id]
+  username varchar(50) [ref: > users.username, NOT NULL]
+  card_id text [ref: > cards.id, NOT NULL]
 
   Indexes {
     (username, card_id) [pk]
   }
+}
+
+Table trade_offers {
+  id text [pk]
+  username varchar(50) [ref: > users.username, NOT NULL]
+  card_id text [ref: > cards.id, NOT NULL]
+  type int [NOT NULL]
+  min_damage float [NOT NULL]
 }
 
 Table cards {
@@ -42,8 +50,8 @@ Table packs {
 }
 
 Table pack_cards {
-  pack_id int  [ref: > packs.id]
-  card_id text [ref: > cards.id]
+  pack_id int  [ref: > packs.id, NOT NULL]
+  card_id text [ref: > cards.id, NOT NULL]
 
   Indexes {
     (pack_id, card_id) [pk]

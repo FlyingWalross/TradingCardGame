@@ -63,14 +63,16 @@ public class CardDao implements Dao<Card, String> {
         try(PreparedStatement stmt = getConnection().prepareStatement(query)) {
             stmt.setString(1, id);
             ResultSet result = stmt.executeQuery();
-            Card card = new Card(
-                    result.getString(1),
-                    result.getString(2),
-                    app.enums.card_type.values()[result.getInt(3)],
-                    app.enums.card_element.values()[result.getInt(4)],
-                    result.getFloat(5)
-            );
-            return card;
+            if(result.next()) {
+                return new Card(
+                        result.getString(1),
+                        result.getString(2),
+                        app.enums.card_type.values()[result.getInt(3)],
+                        app.enums.card_element.values()[result.getInt(4)],
+                        result.getFloat(5)
+                );
+            }
+            return null;
         }
     }
 

@@ -1,13 +1,14 @@
 package app.enums;
 
 public enum card_type {
-    Spell,
-    Goblin,
-    Troll,
-    Elf,
-    Knight,
-    Dragon,
-    Ork,
-    Kraken,
-    Wizard
+    spell,
+    goblin,
+    troll,
+    elf,
+    knight,
+    dragon,
+    ork,
+    kraken,
+    wizard,
+    monster
 }

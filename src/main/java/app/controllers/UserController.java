@@ -4,25 +4,26 @@ import app.dtos.UserCredentials;
 import app.dtos.UserInfo;
 import app.dtos.UserProfile;
 import app.dtos.UserStats;
+import app.exceptions.AlreadyExistsException;
+import app.exceptions.UserDoesNotExistException;
 import app.repositories.UserProfileRepository;
 import app.services.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import http.Responses;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import server.Response;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 @Setter(AccessLevel.PRIVATE)
 @Getter(AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class UserController extends Controller {
     UserProfileRepository userProfileRepository;
-
-    public UserController(UserProfileRepository userProfileRepository) {
-        setUserProfileRepository(userProfileRepository);
-    }
 
     // GET /user-profiles/:username
     public Response getUserInfo(String username) {
@@ -60,6 +61,22 @@ public class UserController extends Controller {
         }
     }
 
+    // GET /scores
+    public Response getScoreboard() {
+        try {
+            ArrayList<UserStats> scoreboard = getUserProfileRepository().getScoreboard();
+
+            // parse to JSON string
+            String scoreboardJSON = getObjectMapper().writeValueAsString(scoreboard);
+
+            return Responses.ok(scoreboardJSON);
+
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return Responses.internalServerError();
+        }
+    }
+
     // POST /user-profiles
     public Response createUser(String requestBody) {
         try {
@@ -68,17 +85,8 @@ public class UserController extends Controller {
 
             return Responses.created();
 
-        } catch (SQLException e) {
-            String sqlState = e.getSQLState();
-            if (sqlState.equals("23000") || sqlState.equals("23505")) {
-                // duplicate user name
-                return Responses.duplicateUsername();
-            } else {
-                // Handle other SQL exceptions
-                e.printStackTrace();
-                return Responses.internalServerError();
-
-            }
+        } catch (AlreadyExistsException e) {
+            return Responses.duplicateUsername();
         } catch (JsonProcessingException e) {
             return Responses.requestMalformed();
         }
@@ -88,15 +96,11 @@ public class UserController extends Controller {
     public Response updateUser(String username, String requestBody) {
         try {
             UserInfo userInfo = getObjectMapper().readValue(requestBody, UserInfo.class);
-            if(userProfileRepository.update(userInfo, username) == null) {
-                return Responses.userDoesNotExist();
-            }
+            getUserProfileRepository().update(userInfo, username);
 
             return Responses.ok();
-
-        } catch (SQLException e) {
-                e.printStackTrace();
-                return Responses.internalServerError();
+        } catch (UserDoesNotExistException e) {
+            return Responses.userDoesNotExist();
         } catch (JsonProcessingException e) {
             return Responses.requestMalformed();
         }

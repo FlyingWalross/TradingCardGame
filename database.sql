@@ -11,15 +11,23 @@ CREATE TABLE "users" (
 );
 
 CREATE TABLE "user_cards_stack" (
-                                    "username" varchar(50),
-                                    "card_id" text,
+                                    "username" varchar(50) NOT NULL,
+                                    "card_id" text NOT NULL,
                                     PRIMARY KEY ("username", "card_id")
 );
 
 CREATE TABLE "user_cards_deck" (
-                                   "username" varchar(50),
-                                   "card_id" text,
+                                   "username" varchar(50) NOT NULL,
+                                   "card_id" text NOT NULL,
                                    PRIMARY KEY ("username", "card_id")
+);
+
+CREATE TABLE "trade_offers" (
+                                "id" text PRIMARY KEY,
+                                "username" varchar(50) NOT NULL,
+                                "card_id" text NOT NULL,
+                                "type" int NOT NULL,
+                                "min_damage" float NOT NULL
 );
 
 CREATE TABLE "cards" (
@@ -35,8 +43,8 @@ CREATE TABLE "packs" (
 );
 
 CREATE TABLE "pack_cards" (
-                              "pack_id" int,
-                              "card_id" text,
+                              "pack_id" int NOT NULL,
+                              "card_id" text NOT NULL,
                               PRIMARY KEY ("pack_id", "card_id")
 );
 
@@ -47,6 +55,10 @@ ALTER TABLE "user_cards_stack" ADD FOREIGN KEY ("card_id") REFERENCES "cards" ("
 ALTER TABLE "user_cards_deck" ADD FOREIGN KEY ("username") REFERENCES "users" ("username");
 
 ALTER TABLE "user_cards_deck" ADD FOREIGN KEY ("card_id") REFERENCES "cards" ("id");
+
+ALTER TABLE "trade_offers" ADD FOREIGN KEY ("username") REFERENCES "users" ("username");
+
+ALTER TABLE "trade_offers" ADD FOREIGN KEY ("card_id") REFERENCES "cards" ("id");
 
 ALTER TABLE "pack_cards" ADD FOREIGN KEY ("pack_id") REFERENCES "packs" ("id");
 
