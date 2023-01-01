@@ -218,4 +218,12 @@ public class Responses {
                 "{ \"error\": \"Your offered card does not meet the requirements of the trade\" }"
         );
     }
+
+    public static Response noOpponentFound() {
+        return new Response(
+                HttpStatus.NOT_FOUND,
+                ContentType.JSON,
+                "{ \"error\": \"No opponent could be found to battle with\" }"
+        );
+    }
 }

@@ -31,6 +31,9 @@ public class AuthenticationService {
     }
 
     public UserProfile authenticateWithToken(String token){
+        if(token == null){
+            return null;
+        }
         String username = token.split("Bearer ")[1];
         username = username.split("-mtcgToken")[0];
         return getUserProfileRepository().getById(username);

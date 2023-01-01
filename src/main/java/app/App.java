@@ -1,9 +1,6 @@
 package app;
 
-import app.controllers.CardController;
-import app.controllers.PackController;
-import app.controllers.TradeController;
-import app.controllers.UserController;
+import app.controllers.*;
 import app.daos.*;
 import app.dtos.UserProfile;
 import app.repositories.PackRepository;
@@ -45,6 +42,7 @@ public class App implements ServerApp {
     PackController packController;
     CardController cardController;
     TradeController tradeController;
+    BattleController battleController;
 
     // In our app we instantiate all of our DAOs, repositories, and controllers
     // we inject the DAOs to the repos
@@ -71,6 +69,7 @@ public class App implements ServerApp {
         setPackController(new PackController(getUserProfileRepository(), getPackRepository()));
         setCardController(new CardController(getUserProfileRepository()));
         setTradeController(new TradeController(getUserProfileRepository(), getTradeRepository()));
+        setBattleController(new BattleController(getUserProfileRepository()));
 
         setAuthenticationService(new AuthenticationService(getUserProfileRepository()));
     }
@@ -133,6 +132,9 @@ public class App implements ServerApp {
                 if (request.getPathname().matches("/tradings/.+")) {
                     String tradeId = request.getPathname().split("/")[2];
                     return getTradeController().acceptTrade(request.getBody(), tradeId, user);
+                }
+                if (request.getPathname().matches("/battles")) {
+                    return getBattleController().battle(user);
                 }
             }
             case PUT -> {
