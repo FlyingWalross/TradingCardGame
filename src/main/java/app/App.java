@@ -4,6 +4,7 @@ import app.controllers.*;
 import app.daos.*;
 import app.dtos.UserProfile;
 import app.repositories.PackRepository;
+import app.repositories.ShopRepository;
 import app.repositories.TradeRepository;
 import app.repositories.UserProfileRepository;
 import app.services.AuthenticationService;
@@ -27,22 +28,12 @@ public class App implements ServerApp {
     Connection connection;
     AuthenticationService authenticationService;
 
-    UserDao userDao;
-    CardDao cardDao;
-    DeckDao deckDao;
-    StackDao stackDao;
-    PackDao packDao;
-    TradeDao tradeDao;
-
-    UserProfileRepository userProfileRepository;
-    PackRepository packRepository;
-    TradeRepository tradeRepository;
-
     UserController userController;
     PackController packController;
     CardController cardController;
     TradeController tradeController;
     BattleController battleController;
+    ShopController shopController;
 
     // In our app we instantiate all of our DAOs, repositories, and controllers
     // we inject the DAOs to the repos
@@ -54,24 +45,27 @@ public class App implements ServerApp {
             e.printStackTrace();
         }
 
-        setUserDao(new UserDao(getConnection()));
-        setCardDao(new CardDao(getConnection()));
-        setDeckDao(new DeckDao(getConnection()));
-        setStackDao(new StackDao(getConnection()));
-        setPackDao(new PackDao(getConnection()));
-        setTradeDao(new TradeDao(getConnection()));
+        UserDao userDao = new UserDao(getConnection());
+        CardDao cardDao = new CardDao(getConnection());
+        DeckDao deckDao = new DeckDao(getConnection());
+        StackDao stackDao = new StackDao(getConnection());
+        PackDao packDao = new PackDao(getConnection());
+        TradeDao tradeDao = new TradeDao(getConnection());
+        ShopDao shopDao = new ShopDao(getConnection());
 
-        setUserProfileRepository(new UserProfileRepository(getUserDao(), getStackDao(), getDeckDao(), getCardDao()));
-        setPackRepository(new PackRepository(getPackDao(), getCardDao()));
-        setTradeRepository(new TradeRepository(getTradeDao(), getCardDao()));
+        UserProfileRepository userProfileRepository = new UserProfileRepository(userDao, stackDao, deckDao, cardDao);
+        PackRepository packRepository = new PackRepository(packDao, cardDao);
+        TradeRepository tradeRepository = new TradeRepository(tradeDao, cardDao);
+        ShopRepository shopRepository = new ShopRepository(shopDao, cardDao);
 
-        setUserController(new UserController(getUserProfileRepository()));
-        setPackController(new PackController(getUserProfileRepository(), getPackRepository()));
-        setCardController(new CardController(getUserProfileRepository()));
-        setTradeController(new TradeController(getUserProfileRepository(), getTradeRepository()));
-        setBattleController(new BattleController(getUserProfileRepository()));
+        setUserController(new UserController(userProfileRepository));
+        setPackController(new PackController(userProfileRepository, packRepository));
+        setCardController(new CardController(userProfileRepository));
+        setTradeController(new TradeController(userProfileRepository, tradeRepository));
+        setBattleController(new BattleController(userProfileRepository));
+        setShopController(new ShopController(userProfileRepository, shopRepository));
 
-        setAuthenticationService(new AuthenticationService(getUserProfileRepository()));
+        setAuthenticationService(new AuthenticationService(userProfileRepository));
     }
 
     // the handleRequest Method is used in the server
@@ -94,20 +88,27 @@ public class App implements ServerApp {
                     }
                     return Responses.notAuthenticated();
                 }
-                if (request.getPathname().matches("/stats")) {
+                if (request.getPathname().equals("/stats")) {
                     return getUserController().getUserStats(user);
                 }
-                if (request.getPathname().matches("/scores")) {
+                if (request.getPathname().equals("/scores")) {
                     return getUserController().getScoreboard();
                 }
-                if (request.getPathname().matches("/cards")) {
+                if (request.getPathname().equals("/cards")) {
                     return getCardController().getUserCards(user);
                 }
-                if (request.getPathname().matches("/decks")) {
-                    return getCardController().getUserDeck(user);
+                if (request.getPathname().equals("/decks")) {
+                    if(request.getParams().equals("format=plain")){
+                        return getCardController().getUserDeckAsString(user);
+                    } else {
+                        return getCardController().getUserDeck(user);
+                    }
                 }
-                if (request.getPathname().matches("/tradings")) {
+                if (request.getPathname().equals("/tradings")) {
                     return getTradeController().getAllTrades();
+                }
+                if (request.getPathname().equals("/shop")) {
+                    return getShopController().getAllShopCards();
                 }
             }
             case POST -> {
@@ -126,15 +127,30 @@ public class App implements ServerApp {
                 if (request.getPathname().equals("/transactions/packages")) {
                     return getPackController().buyPack(user);
                 }
-                if (request.getPathname().matches("/tradings")) {
+                if (request.getPathname().equals("/tradings")) {
                     return getTradeController().createTrade(request.getBody(), user);
                 }
                 if (request.getPathname().matches("/tradings/.+")) {
                     String tradeId = request.getPathname().split("/")[2];
                     return getTradeController().acceptTrade(request.getBody(), tradeId, user);
                 }
-                if (request.getPathname().matches("/battles")) {
+                if (request.getPathname().equals("/battles")) {
                     return getBattleController().battle(user);
+                }
+                if (request.getPathname().equals("/shop/create")) {
+                    if (user.getUsername().equals("admin")) {
+                        return getShopController().createNewShopCard(request.getBody());
+                    }
+                    return Responses.notAdmin();
+                }
+                if (request.getPathname().equals("/shop/quote")) {
+                    return getShopController().getPriceQuote(request.getBody(), user);
+                }
+                if (request.getPathname().equals("/shop/buy")) {
+                    return getShopController().buyCard(request.getBody(), user);
+                }
+                if (request.getPathname().equals("/shop/sell")) {
+                    return getShopController().sellCard(request.getBody(), user);
                 }
             }
             case PUT -> {

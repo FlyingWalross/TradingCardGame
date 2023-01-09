@@ -8,8 +8,7 @@ import app.exceptions.AlreadyExistsException;
 import app.exceptions.NoPacksAvailableException;
 import app.models.Card;
 import app.models.Pack;
-import app.models.Stack;
-import app.models.User;
+import app.services.CardConversionService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,21 +37,8 @@ public class PackRepository {
         try {
             //convert new Cards to Database card model and save to database
             for (NewCard newCard : newCards) {
-                card_element element = card_element.normal;
-                if (newCard.getName().contains("Water")) {
-                    element = card_element.water;
-                } else if (newCard.getName().contains("Fire")) {
-                    element = card_element.fire;
-                }
-
-                card_type type = card_type.valueOf(newCard.getName().replaceAll("(Water|Fire)", "").toLowerCase());
-                Card card = getCardDao().create(new Card(
-                        newCard.getId(),
-                        newCard.getName(),
-                        type,
-                        element,
-                        newCard.getDamage()
-                ));
+                Card card = CardConversionService.convertCard(newCard);
+                getCardDao().create(card);
                 pack.getCardIDs().add(card.getId());
             }
 
@@ -79,7 +65,7 @@ public class PackRepository {
         }
     }
 
-    public PackDTO getRandomPack() throws NoPacksAvailableException {
+    public PackDTO getPack() throws NoPacksAvailableException {
         try {
             HashMap<Integer, Pack> packs = getPackDao().read();
 
@@ -87,19 +73,15 @@ public class PackRepository {
                 throw new NoPacksAvailableException("No packs available");
             }
 
-            // Get a random entry from the HashMap
-            Object[] keys = packs.keySet().toArray();
-            Integer randomKey = (Integer) keys[new Random().nextInt(keys.length)];
-            Pack randomPack = packs.get(randomKey);
+            Pack openedPack = packs.get(packs.keySet().stream().min(Integer::compare).get());
+            PackDTO openedPackDTO = new PackDTO(openedPack.getId());
 
-            PackDTO randomPackDTO = new PackDTO(randomPack.getId());
-
-            for(String cardID : randomPack.getCardIDs()) {
+            for(String cardID : openedPack.getCardIDs()) {
                 Card card = getCardDao().readById(cardID);
-                randomPackDTO.getCards().add(card);
+                openedPackDTO.getCards().add(card);
             }
 
-            return  randomPackDTO;
+            return  openedPackDTO;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

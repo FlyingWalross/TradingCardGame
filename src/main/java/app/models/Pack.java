@@ -16,4 +16,7 @@ public class Pack {
     public Pack() {
         this.cardIDs = new ArrayList<>();
     }
+    public Pack(ArrayList<String> cardIDs) {
+        this.cardIDs = cardIDs;
+    }
 }

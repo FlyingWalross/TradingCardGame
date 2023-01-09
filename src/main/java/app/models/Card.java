@@ -15,4 +15,12 @@ public class Card {
     card_type type;
     card_element element;
     float damage;
+
+    public String stringify() {
+        return  "   Id: " + id + "\n" +
+                "   Name: " + name + "\n" +
+                "   Type: " + type.name() + "\n" +
+                "   Element: " + element.name() + "\n" +
+                "   Damage: " + damage + "\n";
+    }
 }

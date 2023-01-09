@@ -65,7 +65,7 @@ public class Request {
                     line = inputStream.readLine();
                 }
 
-                if (getMethod() == Method.POST || getMethod() == Method.PUT) {
+                if ((getMethod() == Method.POST || getMethod() == Method.PUT) && getContentLength() != null) {
                     int asciChar;
                     for (int i = 0; i < getContentLength(); i++) {
                         asciChar = inputStream.read();

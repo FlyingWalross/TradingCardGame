@@ -1,9 +1,9 @@
 package app.controllers;
 
+import app.Settings;
 import app.dtos.NewCard;
 import app.dtos.UserProfile;
 import app.models.Card;
-import app.repositories.PackRepository;
 import app.repositories.UserProfileRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -70,13 +70,18 @@ public class CardController extends Controller {
         }
     }
 
+    // GET /decks?format=plain
+    public Response getUserDeckAsString(UserProfile user) {
+        return Responses.deckString(user.stringifyDeck());
+    }
+
     // PUT /decks
     public Response configureDeck(String requestBody, UserProfile user) {
         try {
             TypeReference<ArrayList<String>> typeReference = new TypeReference<ArrayList<String>>() {};
             ArrayList<String> cardIDs = getObjectMapper().readValue(requestBody, typeReference);
 
-            if(cardIDs.size() != 4) {
+            if(cardIDs.size() != Settings.STANDARD_DECK_SIZE) {
                 return Responses.deckHasWrongSize();
             }
 

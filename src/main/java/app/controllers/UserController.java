@@ -61,6 +61,7 @@ public class UserController extends Controller {
         }
     }
 
+
     // GET /scores
     public Response getScoreboard() {
         try {

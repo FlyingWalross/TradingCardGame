@@ -1,4 +1,5 @@
 View Diagram on https://dbdiagram.io/
+
 Table users {
   username varchar(50) [pk]
   password_hash text [NOT NULL]
@@ -56,4 +57,11 @@ Table pack_cards {
   Indexes {
     (pack_id, card_id) [pk]
   }
+
+}
+
+Table shop_cards {
+  card_id text [PK, ref: > cards.id, NOT NULL]
+  price int [NOT NULL]
+
 }

@@ -4,10 +4,8 @@ import app.dtos.*;
 import app.exceptions.AlreadyExistsException;
 import app.exceptions.NoPacksAvailableException;
 import app.models.Card;
-import app.models.User;
 import app.repositories.PackRepository;
 import app.repositories.UserProfileRepository;
-import app.services.AuthenticationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import http.Responses;
@@ -49,7 +47,7 @@ public class PackController extends Controller {
                 return Responses.notEnoughCoins();
             }
 
-            PackDTO randomPack = getPackRepository().getRandomPack();
+            PackDTO randomPack = getPackRepository().getPack();
 
             user.getStack().addAll(randomPack.getCards());
             user.setCoins(user.getCoins() - 5);

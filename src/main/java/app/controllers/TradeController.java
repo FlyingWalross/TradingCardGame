@@ -39,8 +39,8 @@ public class TradeController extends Controller {
                 return Responses.noTradesAvailable();
             }
 
-            String userDeckJSON = getObjectMapper().writeValueAsString(trades);
-            return Responses.ok(userDeckJSON);
+            String tradesJSON = getObjectMapper().writeValueAsString(trades);
+            return Responses.ok(tradesJSON);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return Responses.internalServerError();

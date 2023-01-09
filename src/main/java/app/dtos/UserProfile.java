@@ -22,4 +22,14 @@ public class UserProfile {
     String image;
     ArrayList<Card> stack;
     ArrayList<Card> deck;
+
+    public String stringifyDeck() {
+        String deckString = "---------" + username + "'s deck---------\n\n";
+        int i = 1;
+        for (Card card : deck) {
+            deckString += "Card " + i + ":\n" + card.stringify() + "\n";
+            i++;
+        }
+        return deckString;
+    }
 }

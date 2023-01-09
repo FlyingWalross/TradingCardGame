@@ -73,6 +73,9 @@ public class PackDao implements Dao<Pack, Integer> {
             while (result.next()) {
                 pack.getCardIDs().add(result.getString(1));
             }
+            if(pack.getCardIDs().size() == 0) {
+                return null;
+            }
             return pack;
         }
     }

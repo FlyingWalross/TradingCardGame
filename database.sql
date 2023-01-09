@@ -48,6 +48,11 @@ CREATE TABLE "pack_cards" (
                               PRIMARY KEY ("pack_id", "card_id")
 );
 
+CREATE TABLE "shop_cards" (
+                              "card_id" text PRIMARY KEY NOT NULL,
+                              "price" int NOT NULL
+);
+
 ALTER TABLE "user_cards_stack" ADD FOREIGN KEY ("username") REFERENCES "users" ("username");
 
 ALTER TABLE "user_cards_stack" ADD FOREIGN KEY ("card_id") REFERENCES "cards" ("id");
@@ -63,3 +68,5 @@ ALTER TABLE "trade_offers" ADD FOREIGN KEY ("card_id") REFERENCES "cards" ("id")
 ALTER TABLE "pack_cards" ADD FOREIGN KEY ("pack_id") REFERENCES "packs" ("id");
 
 ALTER TABLE "pack_cards" ADD FOREIGN KEY ("card_id") REFERENCES "cards" ("id");
+
+ALTER TABLE "shop_cards" ADD FOREIGN KEY ("card_id") REFERENCES "cards" ("id");

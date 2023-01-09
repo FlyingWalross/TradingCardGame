@@ -115,6 +115,14 @@ public class Responses {
         );
     }
 
+    public static Response notEnoughCoinsForCard() {
+        return new Response(
+                HttpStatus.FORBIDDEN,
+                ContentType.JSON,
+                "{ \"error\": \"You can't afford this card\" }"
+        );
+    }
+
     public static Response notAdmin() {
         return new Response(
                 HttpStatus.FORBIDDEN,
@@ -171,11 +179,19 @@ public class Responses {
         );
     }
 
+    public static Response noShopOffersAvailable() {
+        return new Response(
+                HttpStatus.NO_CONTENT,
+                ContentType.JSON,
+                "{ \"error\": \"There are no cards in the shop\" }"
+        );
+    }
+
     public static Response cardNotInStack() {
         return new Response(
                 HttpStatus.FORBIDDEN,
                 ContentType.JSON,
-                "{ \"error\": \"You don't own this card or it is locked in your deck or another trade\" }"
+                "{ \"error\": \"You don't own this card or it is locked in your deck or a trade\" }"
         );
     }
 
@@ -224,6 +240,38 @@ public class Responses {
                 HttpStatus.NOT_FOUND,
                 ContentType.JSON,
                 "{ \"error\": \"No opponent could be found to battle with\" }"
+        );
+    }
+
+    public static Response deckNotConfigured() {
+        return new Response(
+                HttpStatus.BAD_REQUEST,
+                ContentType.JSON,
+                "{ \"error\": \"You need to create a deck before fighting\" }"
+        );
+    }
+
+    public static Response cardNotInShop() {
+        return new Response(
+                HttpStatus.BAD_REQUEST,
+                ContentType.JSON,
+                "{ \"error\": \"The requested card is not in the shop\" }"
+        );
+    }
+
+    public static Response battleLog(String battleLog) {
+        return new Response(
+                HttpStatus.OK,
+                ContentType.TEXT,
+                battleLog
+        );
+    }
+
+    public static Response deckString(String deckString) {
+        return new Response(
+                HttpStatus.OK,
+                ContentType.TEXT,
+                deckString
         );
     }
 }
