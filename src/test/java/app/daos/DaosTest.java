@@ -529,19 +529,5 @@ public class DaosTest {
     static void deleteTestDb() throws SQLException {
 
         connection.close();
-
-//        //create test database
-//        Connection connection2 = DriverManager.getConnection(
-//                "jdbc:postgresql://localhost:5432/",
-//                "swe1user",
-//                "swe1pw"
-//        );
-//
-//        String sql = "DROP DATABASE test";
-//        PreparedStatement stmt = connection2.prepareStatement(sql);
-//        stmt.executeUpdate();
-//
-//        stmt.close();
-//        connection2.close();
     }
 }
