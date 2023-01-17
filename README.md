@@ -19,8 +19,8 @@
 #### Create tables:
 Run sql skript from file `database.sql` to create tables
 
-### 2. (Optional run tests)
-Open the project in intellij and run all unit tests to confirm that everything is working correctly
+### 2. (Optional) Run tests
+Open the project in intellij and run all unit tests to confirm that everything is working correctly.
 
 ### 3. Start server
 Open project in intellij and start the server.
