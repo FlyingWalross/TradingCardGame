@@ -5,9 +5,9 @@ import app.enums.card_element;
 import app.enums.card_type;
 import app.models.Card;
 
+//used for converting newCards to database card model by interpreting the card name
 public class CardConversionService {
     public static Card convertCard(NewCard newCard){
-        //convert newCard to Database card model
         card_element element = card_element.normal;
         if (newCard.getName().contains("Water")) {
             element = card_element.water;

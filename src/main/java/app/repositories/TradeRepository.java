@@ -51,7 +51,7 @@ public class TradeRepository {
             getTradeDao().create(trade);
         } catch (SQLException e) {
             String sqlState = e.getSQLState();
-            if (sqlState.equals("23000") || sqlState.equals("23505")) {
+            if (sqlState.equals("23000") || sqlState.equals("23505")) { //duplicate primary key
                 throw new AlreadyExistsException("Card already exists");
             } else {
                 // Other SQL exceptions

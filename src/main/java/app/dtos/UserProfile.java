@@ -10,6 +10,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @AllArgsConstructor
+//userprofile is like database user model but has deck and stack
 public class UserProfile {
     String username;
     String passwordHash;

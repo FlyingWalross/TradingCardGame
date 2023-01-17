@@ -1,6 +1,6 @@
 package app.dtos;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,9 +10,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class UserCredentials {
-        @JsonAlias({"Username"})
+        @JsonProperty("Username")
         String username;
-        @JsonAlias({"Password"})
+        @JsonProperty("Password")
         String passwordPlain;
 
         public UserCredentials() {}

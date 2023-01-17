@@ -56,7 +56,7 @@ class TradeRepositoryTest {
 
     @Test
     @DisplayName("get TradeDTO with nonexistent id returns null")
-    void testTradeRepository_getByIdNonexistent() throws SQLException {
+    void testTradeRepository_getByIdNonexistent() {
 
         //---Read nonexistent Trade---
         TradeDTO tradeDTO = tradeRepository.getById("someId");
@@ -101,7 +101,7 @@ class TradeRepositoryTest {
 
     @Test
     @DisplayName("delete trade")
-    void testTradeRepository_delete() throws SQLException, AlreadyExistsException {
+    void testTradeRepository_delete() throws SQLException {
 
         //---Set up test data for Dao mocks---
         when(tradeDao.readById("test")).thenReturn(TestTrade.getTestObject());

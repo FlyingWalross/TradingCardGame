@@ -74,7 +74,7 @@ public class UserDao implements Dao<User, String> {
             stmt.setString(1, username);
             ResultSet result = stmt.executeQuery();
             if (result.next()) {
-                User user = new User(
+                return new User(
                         result.getString(1),
                         result.getString(2),
                         result.getString(3),
@@ -85,7 +85,6 @@ public class UserDao implements Dao<User, String> {
                         result.getString(8),
                         result.getString(9)
                 );
-                return user;
             }
             return null;
         }

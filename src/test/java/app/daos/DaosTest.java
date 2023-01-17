@@ -2,7 +2,6 @@ package app.daos;
 
 import app.testModels.*;
 import app.models.*;
-import app.testModels.*;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,13 +31,7 @@ public class DaosTest {
                 "swe1pw"
         );
 
-        try {
-            String sql = "DROP DATABASE test;";
-            PreparedStatement stmt = connection2.prepareStatement(sql);
-            stmt.executeUpdate();
-        } catch (SQLException ignored) {}
-
-        String sql = "CREATE DATABASE test;";
+        String sql = "DROP DATABASE IF EXISTS test; CREATE DATABASE test;";
         PreparedStatement stmt = connection2.prepareStatement(sql);
         stmt.executeUpdate();
 
@@ -99,7 +92,7 @@ public class DaosTest {
 
     @Test
     @DisplayName("Create And Read")
-    void testDAOs_createAndRead() throws SQLException, IOException {
+    void testDAOs_createAndRead() throws SQLException {
 
         //---Create---
 
@@ -168,7 +161,7 @@ public class DaosTest {
 
     @Test
     @DisplayName("Exception on create with duplicate ids")
-    void testDAOs_createDuplicateIds() throws SQLException, IOException {
+    void testDAOs_createDuplicateIds() throws SQLException {
 
         //---Create twice and assert Exception---
 
@@ -217,7 +210,7 @@ public class DaosTest {
 
     @Test
     @DisplayName("Create And ReadById")
-    void testDAOs_createAndReadById() throws SQLException, IOException {
+    void testDAOs_createAndReadById() throws SQLException {
 
         //---Create---
 
@@ -350,7 +343,7 @@ public class DaosTest {
 
     @Test
     @DisplayName("Delete")
-    void testDAOs_delete() throws SQLException, IOException {
+    void testDAOs_delete() throws SQLException {
 
         //---Create---
 
@@ -445,7 +438,7 @@ public class DaosTest {
 
     @Test
     @DisplayName("Update")
-    void testDAOs_update() throws SQLException, IOException {
+    void testDAOs_update() throws SQLException {
 
         //---Create---
 
@@ -537,19 +530,18 @@ public class DaosTest {
 
         connection.close();
 
-        //create test database
-        Connection connection2 = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/",
-                "swe1user",
-                "swe1pw"
-        );
-
-        String sql = "DROP DATABASE test";
-        PreparedStatement stmt = connection2.prepareStatement(sql);
-        stmt.executeUpdate();
-
-        stmt.close();
-        connection2.close();
+//        //create test database
+//        Connection connection2 = DriverManager.getConnection(
+//                "jdbc:postgresql://localhost:5432/",
+//                "swe1user",
+//                "swe1pw"
+//        );
+//
+//        String sql = "DROP DATABASE test";
+//        PreparedStatement stmt = connection2.prepareStatement(sql);
+//        stmt.executeUpdate();
+//
+//        stmt.close();
+//        connection2.close();
     }
-
 }

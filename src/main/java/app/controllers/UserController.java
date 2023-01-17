@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.Setter;
 import server.Response;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 @Setter(AccessLevel.PRIVATE)

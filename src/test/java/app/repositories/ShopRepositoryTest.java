@@ -2,16 +2,12 @@ package app.repositories;
 
 import app.daos.CardDao;
 import app.daos.ShopDao;
-import app.dtos.NewCard;
 import app.dtos.NewShopCard;
-import app.dtos.UserCredentials;
 import app.exceptions.AlreadyExistsException;
 import app.models.ShopCard;
 import app.testModels.TestCard;
-import app.testModels.TestPack;
 import app.testModels.TestShopCard;
 import app.dtos.ShopCardDTO;
-import app.exceptions.NoPacksAvailableException;
 import app.models.Card;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +55,7 @@ class ShopRepositoryTest {
 
     @Test
     @DisplayName("get all shop cards")
-    void testShopRepository_getAll() throws SQLException, NoPacksAvailableException {
+    void testShopRepository_getAll() throws SQLException {
 
         //---Set up test data for Dao mocks---
 
@@ -153,7 +149,7 @@ class ShopRepositoryTest {
 
     @Test
     @DisplayName("Exception on duplicate shop card")
-    void testShopRepository_ExceptionDuplicateShopCard() throws SQLException, AlreadyExistsException {
+    void testShopRepository_ExceptionDuplicateShopCard() throws SQLException {
 
         NewShopCard newShopCard = new NewShopCard(
                 "1",

@@ -1,11 +1,7 @@
 package app.testModels;
 
-import app.daos.Dao;
-import app.daos.DeckDao;
 import app.models.Deck;
-import app.models.Pack;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 public class TestDeck {

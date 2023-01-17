@@ -1,12 +1,10 @@
 package app.services;
 
-import app.dtos.NewCard;
-import app.enums.card_element;
-import app.enums.card_type;
 import app.models.Card;
 
 import static app.enums.card_type.*;
 
+//calculates the price for cards when selling to the shop
 public class CardPriceCalculationService {
     public static int calculatePrice(Card card) {
 

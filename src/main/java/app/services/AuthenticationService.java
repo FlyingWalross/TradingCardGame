@@ -1,7 +1,6 @@
 package app.services;
 
 import app.dtos.UserProfile;
-import app.models.User;
 import app.repositories.UserProfileRepository;
 import lombok.AccessLevel;
 import lombok.Getter;

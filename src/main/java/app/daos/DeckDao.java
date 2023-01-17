@@ -39,7 +39,7 @@ public class DeckDao implements Dao<Deck, String> {
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 Deck deck = new Deck(
-                        result.getString(1), new ArrayList<String>()
+                        result.getString(1), new ArrayList<>()
                 );
                 decks.put(deck.getUsername(), deck);
             }
@@ -65,7 +65,7 @@ public class DeckDao implements Dao<Deck, String> {
             stmt.setString(1, username);
             ResultSet result = stmt.executeQuery();
             Deck deck = new Deck(
-                    username, new ArrayList<String>()
+                    username, new ArrayList<>()
             );
             while (result.next()) {
                 deck.getCardIDs().add(result.getString(1));

@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 public class StackDao implements Dao<Stack, String> {
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
@@ -39,7 +38,7 @@ public class StackDao implements Dao<Stack, String> {
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 Stack stack = new Stack(
-                        result.getString(1), new ArrayList<String>()
+                        result.getString(1), new ArrayList<>()
                 );
                 stacks.put(stack.getUsername(), stack);
             }
@@ -65,7 +64,7 @@ public class StackDao implements Dao<Stack, String> {
             stmt.setString(1, username);
             ResultSet result = stmt.executeQuery();
             Stack stack = new Stack(
-                    username, new ArrayList<String>()
+                    username, new ArrayList<>()
             );
             while (result.next()) {
                 stack.getCardIDs().add(result.getString(1));

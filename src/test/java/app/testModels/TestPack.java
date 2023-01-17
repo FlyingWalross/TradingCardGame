@@ -1,11 +1,7 @@
 package app.testModels;
 
-import app.daos.Dao;
-import app.daos.PackDao;
 import app.models.Pack;
-import app.models.User;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 public class TestPack {

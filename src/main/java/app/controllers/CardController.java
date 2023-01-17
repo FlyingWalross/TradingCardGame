@@ -1,7 +1,6 @@
 package app.controllers;
 
 import app.Settings;
-import app.dtos.NewCard;
 import app.dtos.UserProfile;
 import app.models.Card;
 import app.repositories.UserProfileRepository;
@@ -25,16 +24,9 @@ public class CardController extends Controller {
     // GET /cards
     public Response getUserCards(UserProfile user) {
         try {
-            ArrayList<NewCard> userCards = new ArrayList<>();
-
-            //convert database Card model to DTO NewCard
-            for(Card card: user.getStack()) {
-                userCards.add(new NewCard(card.getId(), card.getName(), card.getDamage()));
-            }
-
-            for(Card card: user.getDeck()) {
-                userCards.add(new NewCard(card.getId(), card.getName(), card.getDamage()));
-            }
+            ArrayList<Card> userCards = new ArrayList<>();
+            userCards.addAll(user.getStack());
+            userCards.addAll(user.getDeck());
 
             if(userCards.isEmpty()) {
                 return Responses.userHasNoCards();
@@ -51,18 +43,11 @@ public class CardController extends Controller {
     // GET /decks
     public Response getUserDeck(UserProfile user) {
         try {
-            ArrayList<NewCard> userDeck = new ArrayList<>();
-
-            //convert database Card model to DTO NewCard
-            for(Card card: user.getDeck()) {
-                userDeck.add(new NewCard(card.getId(), card.getName(), card.getDamage()));
-            }
-
-            if(userDeck.isEmpty()) {
+            if(user.getDeck().isEmpty()) {
                 return Responses.deckHasNoCards();
             }
 
-            String userDeckJSON = getObjectMapper().writeValueAsString(userDeck);
+            String userDeckJSON = getObjectMapper().writeValueAsString(user.getDeck());
             return Responses.ok(userDeckJSON);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -78,7 +63,7 @@ public class CardController extends Controller {
     // PUT /decks
     public Response configureDeck(String requestBody, UserProfile user) {
         try {
-            TypeReference<ArrayList<String>> typeReference = new TypeReference<ArrayList<String>>() {};
+            TypeReference<ArrayList<String>> typeReference = new TypeReference<>() {};
             ArrayList<String> cardIDs = getObjectMapper().readValue(requestBody, typeReference);
 
             if(cardIDs.size() != Settings.STANDARD_DECK_SIZE) {
@@ -99,7 +84,7 @@ public class CardController extends Controller {
                 if (card == null) {
                     return Responses.cardNotOwned();
                 }
-                if(newDeck.contains(card)) {
+                if(newDeck.contains(card)) { //card is named twice in the request
                     return Responses.cardAlreadyInDeck();
                 }
                 newDeck.add(card);

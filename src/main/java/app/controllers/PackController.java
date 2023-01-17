@@ -27,7 +27,7 @@ public class PackController extends Controller {
     // POST /packages
     public Response createPack(String requestBody) {
         try {
-            TypeReference<ArrayList<NewCard>> newCardTypeReference = new TypeReference<ArrayList<NewCard>>() {};
+            TypeReference<ArrayList<NewCard>> newCardTypeReference = new TypeReference<>() {};
             ArrayList<NewCard> newCards = getObjectMapper().readValue(requestBody, newCardTypeReference);
 
             getPackRepository().create(newCards);
@@ -47,15 +47,15 @@ public class PackController extends Controller {
                 return Responses.notEnoughCoins();
             }
 
-            PackDTO randomPack = getPackRepository().getPack();
+            PackDTO openedPack = getPackRepository().getPack();
 
-            user.getStack().addAll(randomPack.getCards());
+            user.getStack().addAll(openedPack.getCards());
             user.setCoins(user.getCoins() - 5);
             getUserProfileRepository().update(user);
-            getPackRepository().delete(randomPack);
+            getPackRepository().delete(openedPack);
 
             ArrayList<NewCard> acquiredCards = new ArrayList<>();
-            for(Card card: randomPack.getCards()) {
+            for(Card card: openedPack.getCards()) {
                 acquiredCards.add(new NewCard(card.getId(), card.getName(), card.getDamage()));
             }
 

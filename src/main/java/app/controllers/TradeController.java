@@ -1,19 +1,14 @@
 package app.controllers;
 
-import app.dtos.NewCard;
-import app.dtos.PackDTO;
 import app.dtos.TradeDTO;
 import app.dtos.UserProfile;
 import app.enums.card_type;
 import app.exceptions.AlreadyExistsException;
-import app.exceptions.NoPacksAvailableException;
 import app.models.Card;
 import app.models.Trade;
-import app.models.User;
 import app.repositories.TradeRepository;
 import app.repositories.UserProfileRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import http.Responses;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

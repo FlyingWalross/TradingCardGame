@@ -4,7 +4,7 @@ import static app.enums.card_element.normal;
 import static app.enums.card_element.water;
 import static app.enums.card_element.fire;
 
-public class EffectivenessTable {
+public class EffectivenessTable { //table for calculating the effectiveness of attacks between two elements
     public static final float[][] effectiveness = new float[3][3];
     static {
         effectiveness[normal.ordinal()][normal.ordinal()] = 1f;

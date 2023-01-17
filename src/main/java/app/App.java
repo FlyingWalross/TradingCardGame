@@ -72,7 +72,9 @@ public class App implements ServerApp {
     // it returns the response to the client
     public Response handleRequest(Request request) {
 
+        //auth user, null when no token is provided or user doesn't exist
         UserProfile user = getAuthenticationService().authenticateWithToken(request.getHeaders().get("Authorization"));
+
         //user needs to be logged in for every request except login and register
         if(user == null && !request.getPathname().equals("/sessions") && !(request.getPathname().equals("/users") && request.getMethod() == POST)){
             return Responses.notAuthenticated();

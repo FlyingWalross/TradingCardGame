@@ -4,14 +4,9 @@ import app.daos.CardDao;
 import app.daos.ShopDao;
 import app.dtos.NewCard;
 import app.dtos.NewShopCard;
-import app.dtos.PackDTO;
 import app.dtos.ShopCardDTO;
-import app.enums.card_element;
-import app.enums.card_type;
 import app.exceptions.AlreadyExistsException;
-import app.exceptions.NoPacksAvailableException;
 import app.models.Card;
-import app.models.Pack;
 import app.models.ShopCard;
 import app.services.CardConversionService;
 import lombok.AccessLevel;
@@ -62,7 +57,7 @@ public class ShopRepository {
         }
     }
 
-    public void createWithNewCard(NewShopCard newShopCard) throws AlreadyExistsException {
+    public void createWithNewCard(NewShopCard newShopCard) throws AlreadyExistsException { //admin can create a new card and offer it in shop
         try {
 
             //convert newCard to Database card model
@@ -94,7 +89,7 @@ public class ShopRepository {
         }
     }
 
-    public void createWithExistingCard(Card card, int price) throws AlreadyExistsException {
+    public void createWithExistingCard(Card card, int price) throws AlreadyExistsException { //users can sell their existing cards to shop
         try {
 
             ShopCard shopCard = new ShopCard(

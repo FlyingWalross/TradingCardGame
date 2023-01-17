@@ -1,18 +1,14 @@
 package app.controllers;
 
-import app.dtos.NewCard;
 import app.dtos.NewShopCard;
 import app.dtos.ShopCardDTO;
 import app.dtos.UserProfile;
 import app.exceptions.AlreadyExistsException;
-import app.exceptions.NoPacksAvailableException;
 import app.models.Card;
-import app.models.Trade;
 import app.repositories.ShopRepository;
 import app.repositories.UserProfileRepository;
 import app.services.CardPriceCalculationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import http.Responses;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -130,7 +126,7 @@ public class ShopController extends Controller {
     }
 
     // POST /shop/create
-    public Response createNewShopCard(String requestBody) {
+    public Response createNewShopCard(String requestBody) {  //enables admin to create new cards to be offered in shop
         try {
             NewShopCard newShopCard = getObjectMapper().readValue(requestBody, NewShopCard.class);
 

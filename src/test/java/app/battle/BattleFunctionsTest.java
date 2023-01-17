@@ -8,13 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import java.util.ArrayList;
 
 import static app.enums.card_element.*;
 import static app.enums.card_type.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class BattleFunctionsTest {
     @Mock
@@ -24,7 +22,6 @@ public class BattleFunctionsTest {
 
     @BeforeEach
     void setUp() {
-//
         user1 = mock(UserProfile.class);
         userProfileRepository = mock(UserProfileRepository.class);
 

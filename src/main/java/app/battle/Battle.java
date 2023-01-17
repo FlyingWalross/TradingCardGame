@@ -13,7 +13,7 @@ import app.Settings;
 import java.util.concurrent.CountDownLatch;
 
 @Getter
-public class Battle {
+public class Battle { //class with the actual battle logic
     UserProfile user1;
     @Setter
     UserProfile user2;
@@ -23,7 +23,7 @@ public class Battle {
     CountDownLatch battleComplete = new CountDownLatch(1);
 
     public Battle(UserProfile user1, UserProfileRepository userProfileRepository) {
-        this.user1 = user1;
+        this.user1 = user1; //user1 is set by one thread, user2 is later set by the other thread
         this.userProfileRepository = userProfileRepository;
     }
 

@@ -1,10 +1,7 @@
 package app.testModels;
 
-import app.daos.Dao;
-import app.daos.StackDao;
 import app.models.Stack;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 public class TestStack {

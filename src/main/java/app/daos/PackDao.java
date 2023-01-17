@@ -42,7 +42,7 @@ public class PackDao implements Dao<Pack, Integer> {
             ResultSet result = stmt.executeQuery();
             while (result.next()) {
                 Pack pack = new Pack(
-                        result.getInt(1), new ArrayList<String>()
+                        result.getInt(1), new ArrayList<>()
                 );
                 packs.put(pack.getId(), pack);
             }
@@ -68,7 +68,7 @@ public class PackDao implements Dao<Pack, Integer> {
             stmt.setInt(1, id);
             ResultSet result = stmt.executeQuery();
             Pack pack = new Pack(
-                    id, new ArrayList<String>()
+                    id, new ArrayList<>()
             );
             while (result.next()) {
                 pack.getCardIDs().add(result.getString(1));

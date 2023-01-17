@@ -309,7 +309,6 @@ class UserProfileRepositoryTest {
 
         Card card1 = TestCard.getTestObject();
         Card card2 = TestCard.getTestObject();
-        Card card3 = TestCard.getTestObject();
 
         card1.setId("1");
         card2.setId("2");

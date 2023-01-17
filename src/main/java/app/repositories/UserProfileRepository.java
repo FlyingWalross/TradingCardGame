@@ -12,7 +12,6 @@ import app.models.Deck;
 import app.models.Stack;
 import app.models.User;
 import app.services.EncryptionService;
-import http.Responses;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -109,6 +108,7 @@ public class UserProfileRepository {
         }
     }
 
+    //only update UserInfo part of user
     public void update(UserInfo userInfo, String username) throws UserDoesNotExistException {
         try {
             User user = getUserDao().readById(username);
@@ -127,6 +127,7 @@ public class UserProfileRepository {
         }
     }
 
+    //update entire UserProfile including deck and stack
     public void update(UserProfile userProfile) {
         try {
             //update User

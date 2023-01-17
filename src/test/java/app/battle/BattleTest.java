@@ -91,12 +91,12 @@ class BattleTest {
 
         user1 = mock(UserProfile.class);
         when(user1.getDeck()).thenReturn(user1Deck);
-        when(user1.getStack()).thenReturn(new ArrayList<Card>());
+        when(user1.getStack()).thenReturn(new ArrayList<>());
         when(user1.getUsername()).thenReturn("user1");
 
         user2 = mock(UserProfile.class);
         when(user2.getDeck()).thenReturn(user2Deck);
-        when(user2.getStack()).thenReturn(new ArrayList<Card>());
+        when(user2.getStack()).thenReturn(new ArrayList<>());
         when(user2.getUsername()).thenReturn("user2");
 
         userProfileRepository = mock(UserProfileRepository.class);

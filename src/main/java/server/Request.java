@@ -40,7 +40,7 @@ public class Request {
 
             if (line != null) {
                 String[] splitFirstLine = line.split(" ");
-                Boolean hasParams = splitFirstLine[1].indexOf("?") != -1;
+                Boolean hasParams = splitFirstLine[1].contains("?");
 
 
                 setMethod(getMethodFromInputLine(splitFirstLine));
