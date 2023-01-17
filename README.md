@@ -1,5 +1,8 @@
 # Monster Trading Card Game Server
 
+## SDK
+The server uses the java 18 SDK.
+
 ## Set up
 
 ### 1. Set up database
