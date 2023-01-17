@@ -2,7 +2,7 @@
 
 ## Technical Setup
 ### Overview
-The project represents a server providing a REST-API for a Monster Card Trading Game. The server is multi threaded and can handle multiple requests at once. Data is persisted in a postgresql database. 
+The project represents a server providing a REST-API for a Monster Card Trading Game. The server is multithreaded and can handle multiple requests at once. Data is persisted in a postgresql database. 
 
 ### Structure
 1. The **database** stores the data
@@ -24,8 +24,8 @@ The data is then accessed via DAOs for the various models used for the project. 
 ### 3. Repositories
 The repositories interact with the DAOs to create and update data. They also translate some of the database models into DTOs that are easier to use in the controllers. For example, the `UserProfileRepository` uses the `userDao`, `stackDao`, `deckDao` and `cardDao` to handle `UserProfile` objects that also includes two ArrayLists for the user deck and stack. The controller can then simply update these ArrayLists and use the `update()` function of the `UserProfileRepository` to automatically update all relevant tables in the database and save the current state of the user.
 
-### 4. Controlers
-The controlers are responsible for handling the individual requests and generating the corresponding responses. They get and update the DTOs they get from the Repositories. To avoid the code getting to chaotic in the controllers, the individual responses are pre-defined in the Responses class.
+### 4. Controllers
+The controllers are responsible for handling the individual requests and generating the corresponding responses. They get and update the DTOs they get from the Repositories. To avoid the code getting to chaotic in the controllers, the individual responses are pre-defined in the Responses class.
 
 The `BattleController` is also responsible for creating the `Battle` Object and passing it to another thread. The `Battle` Object is where the actual battle logic takes place. At the end of the battle, the `Battle` Object also updates the users (elo, wins, losses) and their cards using the `UserProfileRepository`. After the battle, the `BattleController` can then retrieve the BattleLog from the `Battle` Object and return it to both users.
 
@@ -39,7 +39,7 @@ The unique feature is a card shop, where users can sell their cards for coins. O
 
 The admin also has the ability to create new cards for the shop. In this case, the price for the card can be manually set by the admin.
 
-In addition to the predefinded REST API routes, the following routes were added for the shop:
+In addition to the predefined REST API routes, the following routes were added for the shop:
 
     GET   /shop                                 -> Get all shop offers
     POST  /shop/quote  (cardId in request body) -> Get price quote for card
@@ -53,7 +53,7 @@ There are 45 unit tests:
 - 12 Battle logic tests
 - 7 DAO Tests
 
-### Why the unit tests were choosen:
+### Why the unit tests were chosen:
 Since the controllers are mostly responsible for receiving and processing requests and forming the correct responses, they are kind of already being tested by the curl script. This is why most of the tests test the repositories and DAOs, since this is where some of the less visible logic takes place and certain bugs could easily go unnoticed in the curl-script (e.g. the user not receiving only their deck cards but also their stack cards when sending a request to /decks, cards not being correctly assigned to the right user, user's elo/wins/losses/coins not being updated correctly, etc.); The `Battle` class was also tested to ensure that the battle logic was working as intended.
 
 ### The unit tests explained
@@ -61,7 +61,7 @@ Since the controllers are mostly responsible for receiving and processing reques
 #### Dao Tests
 For the DAO test, a special test database is created in the `@BeforeAll` function using the `database.sql` script. The database is deleted and re-created every time tests are run, so changes in the `database.sql` file will be reflected in the test database. After every individual test, the `@AfterAll` function uses the `database_clear.sql` script to delete all data from the database so that it is empty for the next test. The individual tests then test the various functions of all the DAOs, such as creating, updating, getting and deleting different objects.
 
-It is important to note that for the DAO testing to work as intended, it is important to have simultanious tests (through multithreading) disabled in JUnit. This is currently still experimental and off by default, but could become a problem for database testing in the future, since the DAO tests all access the test database and have to run sequentially to work.
+It is important to note that for the DAO testing to work as intended, it is important to have simultaneous tests (through multithreading) disabled in JUnit. This is currently still experimental and off by default, but could become a problem for database testing in the future, since the DAO tests all access the test database and have to run sequentially to work.
 
 #### Repository Tests
 To test the repositories the needed DAOs for the repository were mocked with Mockito. Then the various repository methods are tested. When creating/updating data using DAOs, captors were used to get and assert the objects passed to the mocked DAOs. When the repository has to read data from the DAOs, Mockito's `when()` method was used to return test data to the repository.
